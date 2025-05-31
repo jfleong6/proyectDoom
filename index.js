@@ -1,4 +1,4 @@
-var operacion = {
+var funOperaciones = {
     "+": sumar,
     "/": dividir,
     "-": restar,
@@ -9,12 +9,10 @@ var otros = {
     "c":borrarActual,
     "=":darResultado
 }
-var inicio = true;
-var operador ="";
-var operacioActual = false;
-var valor = 0;
-var valorActual = 0;
-var punto  = true
+var operacion;
+var igual = true;
+var valor =false;
+var operador= true;
 var resultado = document.querySelector("p")
 function agregartexto(texto){
     if(resultado.textContent === "0" && texto !=="."){
@@ -22,83 +20,84 @@ function agregartexto(texto){
     }else{
         resultado.textContent +=texto;
     }
-    
 }
 function agregarPunto(){
-    if (punto){
-        agregartexto(".")
-        punto = false;
+    if (!resultado.textContent.includes(".")) {
+        agregartexto(".");
     }
-    
 }
 function borrarActual(){
-    punto = true;
     resultado.textContent ="0";
 }
 function darResultado(){
-    resultado.textContent= operacion[operador](parseFloat(valor), parseFloat(resultado.textContent));
-    inicio = true;
+    if(!operador){
+        resultado.textContent = valor;
+    }else{
+        resultado.textContent = funOperaciones[operacion](parseFloat(resultado.textContent));
+    }
+    igual = false;
 }
-function sumar(a, b) {
+function sumar(a) {
     console.log("sumando")
-    valor = a+b;
+    if(!valor){
+        valor = a;
+    }else{
+        valor += a;
+    }
     console.log(valor);
-    return a+b
+    return valor
 }
-function restar(a, b) {
+function restar(a) {
     console.log("restando")
-    if(inicio){valor = b;
-        inicio = false;
+    if(!valor){
+        valor = a;
     }else{
-        valor = a-b;
+        valor -=a;
     }
     console.log(valor);    
     return valor
 }
-function multiplicar(a, b) {
+function multiplicar(a) {
     console.log("multiplicando")
-    if(inicio){valor = 1*b;
-        inicio = false;
+    if(!valor){
+        valor = a;
     }else{
-        valor = a*b;
+        valor *=a;
     }
     console.log(valor);    
     return valor
 
 }
-function dividir(a, b) {
+function dividir(a) {
     console.log("dividiendo")
-    if(inicio){valor = a/1;
-        inicio = false;
+    if(!valor){
+        valor = a;
     }else{
-        valor = a/b;
+        valor /=a;
     }
     console.log(valor);
     return valor
-
 }
-
 function operaciones(accion) {
-    if(operacion[accion]){
-        operador = accion;
-        operacion[accion](parseFloat(valor), parseFloat(resultado.textContent));
-        operacioActual = true;
+    if(funOperaciones[accion]){
+        if (operador){
+            operacion = accion;
+            if (igual){
+                funOperaciones[accion](parseFloat(resultado.textContent));
+            }
+            resultado.textContent = valor
+            operador =false;
+        }
+            
     }else if (otros[accion]){
         otros[accion]()
     }
     else{
-        if(operacioActual !==true){
-            operacioActual = false;
-            agregartexto(accion);
-        }else{
-            resultado.textContent ="";
-            agregartexto(accion);
+        if(!operador){
+            resultado.textContent =0;
         }
-        
+        agregartexto(accion);
+        operador=true;
+        igual = true;
     }
-
-
 }
-document.addEventListener("DOMContentLoaded", () => {
-
-})
